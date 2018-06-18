@@ -51,8 +51,10 @@ with open(csvpath, 'r') as csvfile:
         
     
     #Average change in monthly revenue change list
-    avgChange = sum(monthlyRevChange)/len(monthlyRevChange)
-    roundChange = round(avgChange,2)
+    def averageChange(monthlyRevChange):
+        avgChange = sum(monthlyRevChange)/len(monthlyRevChange)
+        return round(avgChange,2)
+    roundChange = averageChange(monthlyRevChange)
     print("Average change: $" + str(roundChange))
 
     #Point back to the top of the csv file

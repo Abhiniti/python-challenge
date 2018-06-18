@@ -47,16 +47,20 @@ with open(csvpath, 'r') as csvfile:
     #Loop through candidateVotes list
     for number in candidateVotes:
         #Calculate percent won for each candidate
-        percent = round(number/totalVotes*100)
+        percent = round((number/totalVotes*100),2)
         #Add percentWon for each candidate into another list
         percentWon.append(percent)
 
-    #Determine winner
-    maxVotes = max(candidateVotes)
-    #Detemine index for winner
-    maxIndex = candidateVotes.index(maxVotes)
-    #Get name for winneerr
-    winner = candidateNames[maxIndex]
+    #Winner Function
+    def electionWinner(candidateVotes):
+        #Determine winner
+        maxVotes = max(candidateVotes)
+        #Detemine index for winner
+        maxIndex = candidateVotes.index(maxVotes)
+        #Get name for winner
+        return candidateNames[maxIndex]
+    #Return winner from function
+    winner = electionWinner(candidateVotes)
 
     print("Election Results")
     print("-------------------------")
