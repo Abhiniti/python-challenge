@@ -19,22 +19,45 @@ with open(csvpath, 'r') as csvfile:
 
     #Create a list with candidate names and votes
     candidateNames = []
-    candidateVotes = ["1"]
+    candidateVotes = []
     for row in electiondataCSV:
         if row[2] not in candidateNames:
             candidateNames.append(row[2])
-    print(candidateNames)
+            candidateVotes.append(0)
+
+    #Point back to the top of the csv file
+    csvfile.seek(0)
+    #Skip the heade
+    next(electiondataCSV)
 
     for row in electiondataCSV:
-        if(row[2] == candidateNames[0]):
-            candidateVotes = ["1"]
-    print(candidateVotes)
+        if row[2] in candidateNames:
+            #Check index of candidateNames
+            indexNo = candidateNames.index(row[2])
+            #Increment same index in candidateVotes
+            candidateVotes[indexNo] += 1
 
-    # #Loop through column to count up votes
-    # #d = {k:None for k in l}
-    # count = 0
-    # for row in electiondataCSV:
-    #     if (row[2] == "Correy"):
-    #         count += 1
-    # print(count)
-    # print(candidateNames[0])
+    #Calculate percentageWon of each candidate
+    percentWon = []
+    totalVotes = sum(candidateVotes)
+    for number in candidateVotes:
+        percent = round(number/totalVotes*100)
+        percentWon.append(percent)
+
+    #Determine winner
+    maxVotes = max(candidateVotes)
+    maxIndex = candidateVotes.index(maxVotes)
+    winner = candidateNames[maxIndex]
+
+    print("Election Results")
+    print("-------------------------")
+    print("Total Votes: " + str(totalVotes))
+    print("-------------------------")
+    finalArray = []
+    for name in candidateNames:
+        indexNo = candidateNames.index(name)
+        finalArray.append(str(candidateNames[indexNo]) + ": " + str(percentWon[indexNo]) + "% (" + str(candidateVotes[indexNo]) + ")")
+    print(*finalArray, sep='\n')
+    print("-------------------------")
+    print("Winner: " + str(winner))
+    print("-------------------------")
