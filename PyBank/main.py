@@ -11,9 +11,16 @@ with open(csvpath, 'r') as csvfile:
     #Skip the header
     next(budgetdataCSV)
 
+    print("Financial Analysis")
+    print("----------------------------")
     #Count the total number of months in the data set
     noMonths = sum(1 for row in budgetdataCSV)
     print("Total Months: " + str(noMonths))
+
+    #Point back to the top of the csv file
+    csvfile.seek(0)
+    #Skip the header
+    next(budgetdataCSV)
 
     #Sum up the Revenues; make sure to convert to int
     #Initialize total variable
@@ -24,39 +31,62 @@ with open(csvpath, 'r') as csvfile:
     for row in budgetdataCSV:
         totalRev += int(row[1])
         monthlyRevs.append(row[1])
-    print("Total Revenue: " + str(totalRev))
+    print("Total Revenue: $" + str(totalRev))
+
+    #Point back to the top of the csv file
+    csvfile.seek(0)
+    #Skip the header
+    next(budgetdataCSV)
 
     #Average change between monthly revenue
-    #Initialize revChange variable
-    revChange = 0
     #Initialize list containing monthly revenue change
     monthlyRevChange = []
-    #For loop through list
-    for monthAmt in monthlyRevs:
+    #For loop through rows
+    previous = None
+    for row in budgetdataCSV:
+        current = int(row[1])
         #Next row - current row change between months
-        revChange = (monthAmt + 1) - monthAmt
-        monthlyRevChange.append(revChange)
+        monthlyRevChange.append(0 if previous == None else current - previous)
+        previous = current
+        
     
     #Average change in monthly revenue change list
     avgChange = sum(monthlyRevChange)/len(monthlyRevChange)
-    print("Average change: " + str(avgChange))
+    roundChange = round(avgChange,2)
+    print("Average change: $" + str(roundChange))
+
+    #Point back to the top of the csv file
+    csvfile.seek(0)
+    #Skip the header
+    next(budgetdataCSV)
 
     #Determine greatest number in change list
     highest = max(monthlyRevChange)
+    highestMonth = ""
     #Find out index of greatest change
-    highestIndex = monthlyRevChange.index(highest)
+    highestIndex = monthlyRevChange.index(int(highest))
     #For loop comparing monthly rev list to row
     for row in budgetdataCSV:
-        if (row[1] == str(monthlyRevs.index(highestIndex - 1))):
+        if (row[1] == monthlyRevs[highestIndex]):
             highestMonth = row[0]
-    print("Greatest Increase in Profits: " + str(highestMonth) + "($" + str(highest) + ")")
+        elif (row[1] != monthlyRevs[highestIndex]):
+            pass
+    print("Greatest Increase in Profits: " + str(highestMonth) + " ($" + str(highest) + ")")
+
+    #Point back to the top of the csv file
+    csvfile.seek(0)
+    #Skip the header
+    next(budgetdataCSV)
 
     #Determine smallest number in change list
     smallest = min(monthlyRevChange)
+    smallestMonth = ""
     #Find out index of smallest change
-    smallestIndex = monthlyRevChange.index(smallest)
-    #For loop compairng monthly rev list to orw
+    smallestIndex = monthlyRevChange.index(int(smallest))
+    #For loop compairng monthly rev list to row
     for row in budgetdataCSV:
-        if(row[1] == str(monthlyRevs.index(smallestIndex -1))):
+        if(row[1] == monthlyRevs[smallestIndex]):
             smallestMonth = row[0]
-    print("Greatest Decrease in Profits: " + str(smallestMonth) + "($" + str(smallest) + ")")
+        elif (row[1] != monthlyRevs[smallestIndex]):
+            pass
+    print("Greatest Decrease in Profits: " + str(smallestMonth) + " ($" + str(smallest) + ")")
